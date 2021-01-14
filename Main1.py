@@ -2,7 +2,12 @@
 """
 Created on Wed Jan 13 09:48:16 2021
 
-@author: Domenico
+@author: Domenico ed Egidio
+"""
+
+"""
+Si scrive un algoritmo che dato un url in ingresso restituisce la lista degli
+hyperlink presenti nell'url'.
 """
 
 import requests
@@ -18,11 +23,17 @@ parser.add_argument("-o2", "--out_data2", help="Complete path il file input_data
                      type=str, default='./Lista_HyperLinks.json')
 args = parser.parse_args()
 
-#Url d'Analisi http://www.sialserramentisrl.it
+# Si analizza l'url
 Url= requests.get('http://www.sialserramentisrl.it')
-#Quando lanciate una richiesta, Requests fa delle ipotesi sull’encoding della risposta
-#sulla base degli header HTTP. L’encoding del testo utilizzato da Requests si applica al contenuto di Url.text.
-#Potete scoprire quale encoding viene usato da Requests e cambiarlo usando la property Url.encoding
+
+
+# Lanciata una richiesta, la libreria Requests fa delle ipotesi sull'encoding 
+# della risposta sulla base degli header HTTP. L’encoding del testo utilizzato
+# da Requests si applica al contenuto di "Url.text". Si può sapere quale 
+# encoding viene usato dalla libreria Request (ed anche cambiarlo) utilizzando
+# il codice "Url.encoding" 
+
+# Si verifica la disponibilità della pagina
 Status_Url=Url.status_code
 if  Status_Url == 200:
     Html=Url.text
@@ -32,7 +43,8 @@ if  Status_Url == 200:
     print(Info_Url)
 else:
     print('Error 404 NOT FOUND')
-    
+ 
+# Si esporta il file in formato json
 with open(args.out_data1, 'w') as f:
     json.dump(Html, f)
 
