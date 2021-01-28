@@ -1,10 +1,3 @@
-# Analisi-URL:
-Analisi della Profondità delle pagine Web
+Data una lista di url in input come file .txt o .xlsx il programma restituisce come lista tutte le pagine raggiungibili da quell'url in modo ricorsivo fino ad una certa profondità e le salva in output come file .json. Se una pagina riferisce più volte ad una stessa pagina quest'ultima viene inculsa una sola volta nella lista delle pagine restituite. Inoltre il programma riconosce la presenza di cicli nella catena di pagine esplorate, a partire da un dato url.
 
-L'analisi ha inizio con l'acquisizione di un tre url e la loro successiva memorizzazione in una lista. 
-Viene analizzato un url alla volta mediante un ciclo for.
-Utilizziamo la libreria "requests" che ci permette di ottenere informazioni sullo stato della pagina web e la libreria "BeutifulSoup" che ci permette di estrarre dati da un file HTML.
-Lo stato della pagina ci permette di verificare la disponibilità o meno di quest'ultima rilasciando un valore pari a "200" se la pagina Web è on-line. 
-Tramite un algorirmo di visita in profondità visitiamo tutti i link, fino ad un livello scelto di profondità (2, in questo caso).
-I link visitati vengono salvati in una lista, e cosi quindi per ogni url acquisito inizialmente.
-Il programma restituisce quindi in formato .json la lista degli hyperlink presenti nella pagina.
+Per accedere alle pagine web e trovare in esse gli hyperlink sono usati i moduli "requests" e "BeautifulSoup".
