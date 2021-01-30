@@ -88,6 +88,7 @@ class XLSXReader(UrlReader):
         fin = pd.ExcelFile(self.filename) 
         sheetX = fin.parse(0)
         list_of_urls = sheetX['URL'].tolist()
+        
         return list_of_urls
 """
 La sottoclasse DFSCrawler riceve in input la lista degli url che tramite il metodo 
@@ -104,16 +105,14 @@ class DFSCrawler():
     def get_links(self, list_of_urls):
         for url in list_of_urls:
             url = re.findall(r'(https?://[^\s]+)', url)[0]
-            print(' ')
-            print(' ')
-            print(url)
             list_of_links = self.get_links_iteratively(url, "", set([url]), max_depth=args.paramers)
             list_of_links.append("i precenti link fanno riferimento a:"+ (url))
+            
         return list_of_links
     
     def get_links_iteratively(self, base, path, visited, max_depth=args.paramers, depth=0):
-        list_e = []
-        
+        #Creazione lista Errori
+        list_e = []  
         if depth < max_depth:
             try:
                 soup = BeautifulSoup(requests.get(base + path).text, "html.parser")
@@ -123,7 +122,8 @@ class DFSCrawler():
                         visited.add(href)
                         list_of_links.append(href)
                         list_of_links.append(f"at depth {depth}: {href}")
-                        print(f"at depth {depth}: {href}")
+                        #Visualizza in console il Crawler
+                        #print(f"at depth {depth}: {href}")
                         if href.startswith("http"):
                             self.get_links_iteratively(href, "", visited, max_depth, depth + 1)
                         else:
@@ -144,6 +144,7 @@ class ListCleaner():
     def __init__(self):
         pass
     
+#Metodo che elimina # se prensente nella lista degli hyperlink
     def clean_list(self, list_of_links):
         try:
          list_of_links.remove("#")
@@ -151,16 +152,22 @@ class ListCleaner():
           pass
          
         return list_of_links
-    
+
+#Metodo che elimina i record identici se prensenti nella lista degli hyperlink
     def drop_duplicates(self, list_of_links):
         try:
           list_of_links = list(dict.fromkeys(list_of_links))
         except:
             pass
+        
         return list_of_links
-    
+
+#Metodo che elimina i valori None se prensenti nella lista degli hyperlink    
     def drop_none_values(self, list_of_links):
-        list_of_links = list(filter(None.__ne__, list_of_links))
+        try:
+            list_of_links = list(filter(None.__ne__, list_of_links))
+        except:
+            pass
         return list_of_links
         
     
@@ -171,26 +178,27 @@ MAIN
 # Si acquisisce la lista degli url 
 reader = UrlReader.create_instance(args.in_data)
 list_of_urls = reader.get_list_of_url()
-
 # Si estraggono gli hyperlink presenti in ogni url e li si salva in una lista
 extractor = DFSCrawler()
 list_of_links = extractor.get_links(list_of_urls)
-list_of_links = list(list_of_links)
+
 # Si eliminano dalla lista dei link i valori non voluti
 cleaner = ListCleaner()
 
-
+#Crawler che salva anche hyperlink non sodisfano le condizioni del Crawler
 list_e = extractor.get_links(list_of_urls)
 
+#Pulizia file output
 list_of_links = cleaner.clean_list(list_of_links)
 list_of_links = cleaner.drop_duplicates(list_of_links)
 list_of_links = cleaner.drop_none_values(list_of_links)
 
 
-
+#Salvo la lista di hyperlink
 with open(args.out_data, 'w') as f:
     json.dump(list_of_links, f, indent=3)
 
+#Salvo la lista di hyperlink che non sodisfano le condizioni del Crawler
 with open(args.out_dataError, 'w') as k:
     json.dump(list_e, k, indent=3)
     
