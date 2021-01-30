@@ -14,6 +14,7 @@ import requests
 from bs4 import BeautifulSoup
 import json
 import pandas as pd 
+#from reader import UrlReader
 
 """
 Si utilizza il parser per la lettura dei file in input e per la scrittura dei file in output
@@ -116,6 +117,9 @@ class DFSCrawler():
         if depth < max_depth:
             try:
                 soup = BeautifulSoup(requests.get(base + path).text, "html.parser")
+                Status_Url=soup.status_code
+                if  Status_Url != 200:
+                    list_e.append(base + path)
                 for link in soup.find_all("a"):
                     href = link.get("href")
                     if href not in visited:
@@ -128,8 +132,8 @@ class DFSCrawler():
                             self.get_links_iteratively(href, "", visited, max_depth, depth + 1)
                         else:
                             self.get_links_iteratively(base, href, visited, max_depth, depth + 1)
-                    else:                       
-                        list_e.append(href)
+                    else:
+                       pass
             except:
                 pass
             
@@ -168,6 +172,7 @@ class ListCleaner():
             list_of_links = list(filter(None.__ne__, list_of_links))
         except:
             pass
+        
         return list_of_links
         
     
@@ -187,6 +192,7 @@ cleaner = ListCleaner()
 
 #Crawler che salva anche hyperlink non sodisfano le condizioni del Crawler
 list_e = extractor.get_links(list_of_urls)
+#soup = extractor.get_links(list_of_urls)
 
 #Pulizia file output
 list_of_links = cleaner.clean_list(list_of_links)
