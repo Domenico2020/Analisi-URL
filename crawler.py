@@ -11,7 +11,7 @@ from urllib.parse import urljoin
 """
 La sottoclasse DFSCrawler riceve in input la lista degli url che tramite il metodo 
 della classe get_links() ne estrae uno alla volta. Quindi il metodo get_links() richiama
-il secondo metodo della classe get_links_iteratively() che a sua volta tramite una visita in 
+il secondo metodo della classe get_links_recursively() che a sua volta tramite una visita in 
 profondità analizza l'url e tutte le pagine che questo riferisce restituendo la lista degli
 hyperlink (list_of_links) collegati all'url analizzato
 """
@@ -22,7 +22,7 @@ class DFSCrawler():
         self.list_of_cycles = list_of_cycles
     
     # il crawler
-    def get_links_iteratively(self, base, path, visited, max_depth):
+    def get_links_recursively(self, base, path, visited, max_depth):
         if 0 < max_depth:
             try:
                 soup = BeautifulSoup(requests.get(base + path).text, "html.parser")
@@ -50,9 +50,9 @@ class DFSCrawler():
                                     self.list_of_links.append(href)
                         print(f"at depth {max_depth}: {href}")
                         if href.startswith("http"):                   
-                            self.get_links_iteratively(href, "", visited, max_depth-1)
+                            self.get_links_recursively(href, "", visited, max_depth-1)
                         else:
-                            self.get_links_iteratively(base, href, visited, max_depth-1)
+                            self.get_links_recursively(base, href, visited, max_depth-1)
                     else:
                         self.list_of_cycles.append(href)
             except:

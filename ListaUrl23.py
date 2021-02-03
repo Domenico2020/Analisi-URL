@@ -43,7 +43,7 @@ for url in list_of_urls:
     extractor.list_of_links.append(
                     "-------------- I LINK SEGUENTI FANNO RIFERIMENTO A: "
                     + url + " --------------")
-    extractor.get_links_iteratively(url, "", set([url]), args.max_depth)
+    extractor.get_links_recursively(url, "", set([url]), args.max_depth)
 list_of_links = extractor.list_of_links
 list_of_cycles = extractor.list_of_cycles
 
