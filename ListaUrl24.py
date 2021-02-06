@@ -5,7 +5,7 @@ Created on Mon Jan 18 22:19:22 2021
 
 @authors: Egidio e Domenico
 """
-
+import requests
 import argparse
 import json
 from reader import UrlReader
@@ -39,9 +39,9 @@ list_of_urls = reader.get_list_of_url()
 # Si estraggono gli hyperlink presenti in ogni url e li si salva in una lista
 extractor = DFSCrawler()
 for url in list_of_urls:
-    print(' ')
-    print(' ')
-    print(url)  
+    # print(' ')
+    # print(' ')
+    # print(url)  
     extractor.list_of_links.append(
                     "-------------- I LINK SEGUENTI FANNO RIFERIMENTO A: "
                     + url + " --------------")
@@ -52,6 +52,16 @@ for url in list_of_urls:
 list_of_links = extractor.list_of_links
 list_of_cycles = extractor.list_of_cycles
 
+for start in list_of_urls:
+    for errore in list_of_cycles: 
+        #r = requests.get(errore)
+        if errore == start:
+            list_of_links.append("-------------- E' PRESENTE UN HOME BUTTON AL URL: "
+                    + start + " --------------")
+        if errore==('javascript:void(0);'):
+            list_of_links.append("STAI UTILIZZANDO SOFTWARE CHE BLOCCANO I POPUP DISATTIVARLI PER MIGLIORARE LA RICERCA")
+        #if not r == 200:
+            #print('Ciao')
 # Si eliminano dalla lista dei link i valori non voluti
 cleaner = ListCleaner()
 list_of_links = cleaner.drop_duplicates(list_of_links)

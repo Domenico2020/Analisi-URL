@@ -47,7 +47,7 @@ class DFSCrawler():
                                     self.list_of_links.append(href)
                                 if href.startswith('https'):
                                     self.list_of_links.append(href)
-                        print(f"at depth {max_depth}: {href}")
+                        #print(f"at depth {max_depth}: {href}")
                         if href.startswith("http"):                   
                             self.get_links_recursively(href, "", visited, max_depth-1)
                         else:
