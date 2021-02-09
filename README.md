@@ -1,8 +1,5 @@
 Data una lista di url in input come file .txt o .xlsx il programma restituisce come lista tutte le pagine raggiungibili da quell'url in modo ricorsivo fino ad una certa profondità e le salva in output come file .json. Se una pagina riferisce più volte ad una stessa pagina quest'ultima viene inculsa una sola volta nella lista delle pagine restituite. Inoltre il programma riconosce la presenza di cicli e di hyperlink non funzionanti nella catena di pagine esplorate, a partire da un dato url e li segnala nel file JSON di uscita.
-Il programma segnala la presenza di Home Button per ogni url analizzato e se si utilizza un software che da protezione per i popup.
 
 Per accedere alle pagine web e trovare in esse gli hyperlink sono usati i moduli "requests", "BeautifulSoup" ed "urljoin".
 
-L'utente può usare il programma cliccando su "run file" (ad esempio se usato Spyder), poichè è di default la lettura del file .txt, il percorso relativo a dove viene salvato ed un opzione sulla profondità del crawling; altrimenti può tramite terminale scegliere la lettura di un file .xlsx, se si sceglie questo tipo ti file inserire il nome della Colonna contenente gli Url da analizzare, il percorso tramite il quale salvare il file oltre che decidere il livello di profondità del crawling.
-
-Il programma prima di restituire la lista in formato JSON pulisce opportunamente il file eliminando i duplicati ed i valori "None"
+L'utente può usare il programma cliccando su "run file" (ad esempio se usato Spyder), poichè è di default la lettura del file .txt, il percorso relativo a dove viene salvato ed un opzione sulla profondità del crawling; altrimenti può tramite terminale scegliere la lettura di un file .xlsx, se si sceglie questo tipo ti file inserire il nome della colonna contenente gli url da analizzare, il percorso tramite il quale salvare il file oltre che decidere il livello di profondità del crawling.
