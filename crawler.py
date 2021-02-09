@@ -19,59 +19,43 @@ class DFSCrawler():
     def __init__(self):
         self.list_of_links = []
         self.list_of_cycles = []
+        self.list_of_errors = []
     
     # il crawler
     def get_links_recursively(self, base, path, visited, max_depth):
         if 0 < max_depth:
             try:
-                soup = BeautifulSoup(requests.get(base + path).text, "html.parser")
+                # Si ottiene una pagina web e la si salva nell'oggetto Response chiamato r
+                r = requests.get(base + path)
+                # Si considera lo stato della pagina web
+                if r.status_code != 200:
+                    print("non è raggiungibile:", base+path)  
+                    self.list_of_errors.append({base: base+path})
+                # Si considera il contenuto di r (Response) in Unicode
+                html_text = r.text
+                # Si estraggono le informazioni dal testo htlm
+                soup = BeautifulSoup(html_text, "html.parser")
                 for link in soup.find_all("a"):
                     href = link.get("href")
-                    if href not in visited:
-                        visited.add(href)                      
-                        if href is not None:
-                            # Non si considerano i link alla mail
-                            if href.startswith('mailto:'):
-                                pass
-                            # Non si considerano i link al telefono
-                            elif href.startswith('tel'):
-                                pass
-                            else: 
-                                if not href.startswith('http'):
-                                    joint = urljoin(base, href)
-                                    self.list_of_links.append(joint)                               
-                                if not href.startswith('https'):
-                                    joint = urljoin(base, href)
-                                    self.list_of_links.append(joint)
-                                if href.startswith('http'):
-                                    self.list_of_links.append(href)
-                                if href.startswith('https'):
-                                    self.list_of_links.append(href)
-                        #print(f"at depth {max_depth}: {href}")
-                        if href.startswith("http"):                   
-                            self.get_links_recursively(href, "", visited, max_depth-1)
-                        else:
-                            self.get_links_recursively(base, href, visited, max_depth-1)
+                    # Non si considerano i link alla mail
+                    if href.startswith('mailto:'):
+                        pass
+                    # Non si considerano i link al telefono
+                    elif href.startswith('tel'):
+                        pass
                     else:
-                        visited.add(href)                      
-                        if href is not None:
-                            # Non si considerano i link alla mail
-                            if href.startswith('mailto:'):
-                                pass
-                            # Non si considerano i link al telefono
-                            elif href.startswith('tel'):
-                                pass
-                            else: 
-                                if not href.startswith('http'):
-                                    joint = urljoin(base, href)
-                                    self.list_of_cycles.append(joint)                               
-                                if not href.startswith('https'):
-                                    joint = urljoin(base, href)
-                                    self.list_of_cycles.append(joint)
-                                if href.startswith('http'):
-                                    self.list_of_cycles.append(href)
-                                if href.startswith('https'):
-                                    self.list_of_cycles.append(href)
+                        if not href.startswith('http'):
+                            href = urljoin(base, href)
+                        if href not in visited:
+                            visited.add(href)                      
+                            print(f"at depth {max_depth}: {href}")
+                            if href.startswith("http"):    
+                                self.list_of_links.append({href: base+path})
+                                self.get_links_recursively(href, "", visited, max_depth-1)
+                            else:
+                                self.get_links_recursively(base, href, visited, max_depth-1)
+                        else:
+                            self.list_of_cycles.append({href: base+path})
             except:
                 pass
                 
